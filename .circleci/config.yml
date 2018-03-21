@@ -40,9 +40,25 @@ jobs:
       # run tests! and gen code coverage
       - run: mvn integration-test cobertura:cobertura
 
+#      - store_test_results:
+#          path: target/surefire-reports
+#
+#      - run:
+#          name: Send to CodeCov
+#          command: bash <(curl -s https://codecov.io/bash)
+- run:
+          name: Save test results
+          command: |
+            mkdir -p ~/junit/
+            find . -type f -regex ".*/build/test-results/.*xml" -exec cp {} ~/junit/ \;
+          when: always
+
       - store_test_results:
-          path: target/surefire-reports
+          path: ~/junit
+
+      - store_artifacts:
+          path: ~/junit
 
       - run:
           name: Send to CodeCov
-          command: bash <(curl -s https://codecov.io/bash)
+command: bash <(curl -s https://codecov.io/bash)
